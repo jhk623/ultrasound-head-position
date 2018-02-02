@@ -2,7 +2,7 @@ JPEGImages/*
 afw/*
 aug_img/*
 boxedimg/*
-*.py
+
 *.out
 output/*
 *.txt

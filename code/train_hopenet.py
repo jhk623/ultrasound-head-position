@@ -63,7 +63,6 @@ def get_non_ignored_params(model):
 
 def get_fc_params(model):
     # Generator function that yields fc layer params.
-#    b = [model.fc_yaw, model.fc_pitch, model.fc_roll]
     b = [model.fc_roll]
     for i in range(len(b)):
         for module_name, module in b[i].named_modules():
@@ -89,7 +88,6 @@ if __name__ == '__main__':
         os.makedirs('output/snapshots')
 
     # ResNet50 structure
-#    model = hopenet.Hopenet(torchvision.models.resnet.Bottleneck, [3, 4, 6, 3], 66)
     model = hopenet.Hopenet(torchvision.models.resnet.Bottleneck, [3, 4, 6, 1], 66)
 
     if args.snapshot == '':
@@ -140,32 +138,20 @@ if __name__ == '__main__':
             images = Variable(images).cuda(gpu)
 
             # Binned labels
-#            label_yaw = Variable(labels[:,0]).cuda(gpu)
-#            label_pitch = Variable(labels[:,1]).cuda(gpu)
             label_roll = Variable(labels[:,2]).cuda(gpu)
 
             # Continuous labels
-#            label_yaw_cont = Variable(cont_labels[:,0]).cuda(gpu)
-#            label_pitch_cont = Variable(cont_labels[:,1]).cuda(gpu)
             label_roll_cont = Variable(cont_labels[:,2]).cuda(gpu)
 
             # Forward pass
-#            yaw, pitch, roll = model(images)
             roll = model(images)
 
             # Cross entropy loss
-#            loss_yaw = criterion(yaw, label_yaw)
-#            loss_pitch = criterion(pitch, label_pitch)
             loss_roll = criterion(roll, label_roll)
 
             # MSE loss
-#            yaw_predicted = softmax(yaw)
-#            pitch_predicted = softmax(pitch)
             roll_predicted = softmax(roll)
 #            temptensor = softmax(roll)
-            
-#            yaw_predicted = torch.sum(yaw_predicted * idx_tensor, 1) * 3 - 99
-#            pitch_predicted = torch.sum(pitch_predicted * idx_tensor, 1) * 3 - 99
             roll_predicted = torch.sum(roll_predicted * idx_tensor, 1) * 3 - 99
 #            temptensor = torch.sum(temptensor * idx_tensor, 1) 
 #            aaa = Variable(torch.ByteTensor([1])).cuda()
@@ -184,26 +170,18 @@ if __name__ == '__main__':
 #                roll_predicted[ind] = tmp
 #                ind +=1
 
-#            loss_reg_yaw = reg_criterion(yaw_predicted, label_yaw_cont)
-#            loss_reg_pitch = reg_criterion(pitch_predicted, label_pitch_cont)
             loss_reg_roll = reg_criterion(roll_predicted, label_roll_cont)
 
             # Total loss
-#            loss_yaw += alpha * loss_reg_yaw
-#            loss_pitch += alpha * loss_reg_pitch
             loss_roll += alpha * loss_reg_roll
 
-#            loss_seq = [loss_yaw, loss_pitch, loss_roll]
             loss_seq = [loss_roll]
-#            grad_seq = [torch.Tensor(1).cuda(gpu) for _ in range(len(loss_seq))]
             grad_seq = [torch.Tensor(1).cuda(gpu) for _ in range(len(loss_seq))]
             optimizer.zero_grad()
             torch.autograd.backward(loss_seq, grad_seq)
             optimizer.step()
 
             if (i+1) % 100 == 0:
-#                print ('Epoch [%d/%d], Iter [%d/%d] Losses: Yaw %.4f, Pitch %.4f, Roll %.4f'
-#                       %(epoch+1, num_epochs, i+1, len(pose_dataset)//batch_size, loss_yaw.data[0], loss_pitch.data[0], loss_roll.data[0]))
                  print ('Epoch [%d/%d], Iter [%d/%d] Losses: Roll %.4f'
                        %(epoch+1, num_epochs, i+1, len(pose_dataset)//batch_size, loss_roll.data[0]))
 
