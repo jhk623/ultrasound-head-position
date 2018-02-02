@@ -46,7 +46,7 @@ class Train_AUG(Dataset):
         annot = open(txt_path,'r')
         line = annot.readline().split(' ')
         yaw, pitch, roll = [float(line[1]), float(line[2]), float(line[3])]
-#        roll = math.radians(roll)
+        roll = math.radians(roll)
 #        while roll >= 2 * math.pi:
 #            roll -= 2 * math.pi
 #        while roll <= -2 * math.pi:
@@ -73,8 +73,8 @@ class Train_AUG(Dataset):
        
         img = img.crop((int(x1), int(y1), int(x2), int(y2)))
         # Bin values
-        bins = np.array(range(-99, 102, 3))
-#        labels = torch.LongTensor(np.digitize([yaw, pitch, roll], bins) - 1)
+        bins = np.array(np.arange(math.radians(-99), math.radians(102), math.radians(3)))
+
         labels = torch.LongTensor(np.digitize([yaw, pitch, roll], bins) - 1)
         cont_labels = torch.FloatTensor([yaw, pitch, roll])
 
@@ -114,7 +114,7 @@ class Test_AUG(Dataset):
         annot = open(txt_path,'r')
         line = annot.readline().split(' ')
         yaw, pitch, roll = [float(line[1]), float(line[2]), float(line[3])]
-#        roll = math.radians(roll)
+        roll = math.radians(roll)
 #        while roll >= 2 * math.pi:
 #            roll -= 2 * math.pi
 #        while roll <= -2 * math.pi:
@@ -141,8 +141,7 @@ class Test_AUG(Dataset):
 
         img = img.crop((int(x1), int(y1), int(x2), int(y2)))
         # Bin values
-        bins = np.array(range(-99, 102, 3))
-#        labels = torch.LongTensor(np.digitize([yaw, pitch, roll], bins) - 1)
+        bins = np.array(np.arange(math.radians(-99), math.radians(102), math.radians(3)))
         labels = torch.LongTensor(np.digitize([yaw, pitch, roll], bins) - 1)
         cont_labels = torch.FloatTensor([yaw, pitch, roll])
 
@@ -184,7 +183,7 @@ class NotAUG(Dataset):
         annot = open(txt_path,'r')
         line = annot.readline().split(' ')
         yaw, pitch, roll = [float(line[1]), float(line[2]), float(line[3])]
-#        roll = math.radians(roll)
+        roll = math.radians(roll)
 #        while roll >= 2 * math.pi:
 #            roll -= 2 * math.pi
 #        while roll <= -2 * math.pi:
@@ -211,8 +210,7 @@ class NotAUG(Dataset):
 
         img = img.crop((int(x1), int(y1), int(x2), int(y2)))
         # Bin values
-        bins = np.array(range(-99, 102, 3))
-#        labels = torch.LongTensor(np.digitize([yaw, pitch, roll], bins) - 1)
+        bins = np.array(np.arange(math.radians(-99), math.radians(102), math.radians(3)))
         labels = torch.LongTensor(np.digitize([yaw, pitch, roll], bins) - 1)
         cont_labels = torch.FloatTensor([yaw, pitch, roll])
 

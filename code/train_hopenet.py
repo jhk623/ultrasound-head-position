@@ -14,7 +14,7 @@ import torch.nn.functional as F
 
 import datasets, hopenet
 import torch.utils.model_zoo as model_zoo
-import math
+from math import radians, pi
 
 def parse_args():
     """Parse input arguments."""
@@ -151,24 +151,24 @@ if __name__ == '__main__':
 
             # MSE loss
             roll_predicted = softmax(roll)
-#            temptensor = softmax(roll)
-            roll_predicted = torch.sum(roll_predicted * idx_tensor, 1) * 3 - 99
-#            temptensor = torch.sum(temptensor * idx_tensor, 1) 
-#            aaa = Variable(torch.ByteTensor([1])).cuda()
-#            bbb = Variable(torch.FloatTensor([math.pi]).cuda())
-#            ind = 0
-#            for tmp in temptensor:
-#                while torch.equal(torch.ge(tmp, 2*math.pi), aaa):
-#                    tmp =  torch.add(tmp, -2, bbb)
-#                while torch.equal(torch.le(tmp, -2*math.pi), aaa):
-#                    tmp = torch.add(tmp, 2, bbb)
-#                if torch.equal(torch.gt(tmp, math.pi), aaa):
-#                    tmp =  torch.add(tmp, -2, bbb)
-#                if torch.equal(torch.le(tmp, -math.pi), aaa):
-#                    tmp =  torch.add(tmp, 2, bbb)
+            temptensor = softmax(roll)
+            roll_predicted = torch.sum(roll_predicted * idx_tensor, 1) * radians(3) - radians(99)
+            temptensor = torch.sum(temptensor * idx_tensor, 1) * radians(3) - radians(99)
+            aaa = Variable(torch.ByteTensor([1])).cuda()
+            bbb = Variable(torch.FloatTensor([pi]).cuda())
+            ind = 0
+            for tmp in temptensor:
+                while torch.equal(torch.ge(tmp, 2*pi), aaa):
+                    tmp =  torch.add(tmp, -2, bbb)
+                while torch.equal(torch.le(tmp, -2*pi), aaa):
+                    tmp = torch.add(tmp, 2, bbb)
+                if torch.equal(torch.gt(tmp, pi), aaa):
+                    tmp =  torch.add(tmp, -2, bbb)
+                if torch.equal(torch.le(tmp, -pi), aaa):
+                    tmp =  torch.add(tmp, 2, bbb)
 
-#                roll_predicted[ind] = tmp
-#                ind +=1
+                roll_predicted[ind] = tmp
+                ind +=1
 
             loss_reg_roll = reg_criterion(roll_predicted, label_roll_cont)
 
